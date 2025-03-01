@@ -2,8 +2,8 @@ const axios = require("axios");
 const { Tail } = require("tail");
 
 // Discord webhook URL (replace with your own webhook URL)
-const discordWebhookUrl =
-  "https://discord.com/api/webhooks/1343477271759032361/OCQdzhuzrNjh4DSFI9KHU3SCPVNHEuM6nGf5jHxpf15EZ4fkwmwpI-Un3mOfdKFlpLaK";
+const discordWebhookUrl = Process.env.discordWebhookUrl
+  ;
 
 // Function to send logs to Discord
 function sendLogToDiscord(logMessage) {
