@@ -1,9 +1,9 @@
 const axios = require("axios");
 const { Tail } = require("tail");
+require('dotenv').config();
 
 // Discord webhook URL (replace with your own webhook URL)
-const discordWebhookUrl = Process.env.discordWebhookUrl
-  ;
+const discordWebhookUrl = process.env.discordWebhookUrl;
 
 // Function to send logs to Discord
 function sendLogToDiscord(logMessage) {
@@ -20,10 +20,32 @@ function sendLogToDiscord(logMessage) {
 }
 
 // Start tailing the log file
-const tail = new Tail(
-  "D:/Office/SparkTechAgency/audio-book-app/AudioBook-Backend/app.log",
+// const tail = new Tail(
+//   // "D:/Office/SparkTechAgency/audio-book-app/AudioBook-Backend/app.log",
 
-  {
+//   "C:/Users/Mohammad/Project/AIMConstruction-Backend/winston/success/03-03-2025-10-success.log"
+
+//   ,{
+//     useWatchFile: true, // forces polling instead of relying on fs.watch events
+//   }
+// );
+
+const tailSuccess = new Tail(
+  // "D:/Office/SparkTechAgency/audio-book-app/AudioBook-Backend/app.log",
+
+  "C:/Users/Mohammad/Project/AIMConstruction-Backend/winston/success/2025-03-03-success.log"
+
+  ,{
+    useWatchFile: true, // forces polling instead of relying on fs.watch events
+  }
+);
+
+const tailError = new Tail(
+  // "D:/Office/SparkTechAgency/audio-book-app/AudioBook-Backend/app.log",
+
+  "C:/Users/Mohammad/Project/AIMConstruction-Backend/winston/error/2025-03-03-error.log"
+
+  ,{
     useWatchFile: true, // forces polling instead of relying on fs.watch events
   }
 );
@@ -34,7 +56,7 @@ const tail = new Tail(
 // });
 
 // Handle errors
-tail.on("error", (error) => {
+tailError.on("error", (error) => {
   console.error("Error with tailing log file:", error);
 });
 
@@ -46,7 +68,29 @@ setInterval(() => {
   messageCount = 0;
 }, 10000); // Reset every 10 seconds
 
-tail.on("line", (data) => {
+// tail.on("line", (data) => {
+//   if (messageCount < maxMessagesPerInterval) {
+//     sendLogToDiscord(data);
+//     messageCount++;
+//   } else {
+//     console.log("Rate limit exceeded, skipping log message.----- 😵‍💫");
+//     console.log(data);
+//   }
+// });
+
+
+tailSuccess.on("line", (data) => {
+  if (messageCount < maxMessagesPerInterval) {
+    sendLogToDiscord(data);
+    messageCount++;
+  } else {
+    console.log("Rate limit exceeded, skipping log message.----- 😵‍💫");
+    console.log(data);
+  }
+});
+
+
+tailError.on("line", (data) => {
   if (messageCount < maxMessagesPerInterval) {
     sendLogToDiscord(data);
     messageCount++;
